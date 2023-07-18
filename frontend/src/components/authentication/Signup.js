@@ -2,7 +2,8 @@ import { Button, FormControl, FormLabel, Input, InputGroup, InputRightElement, V
 import React, { useState } from 'react'
 
 const Signup = () => {
-    const [show, setShow] = useState(false);
+    const [showP, setShowP] = useState(false);
+    const [showCP, setShowCP] = useState(false);
 
     const [name, setName] = useState();
     const [email, setEmail] = useState();
@@ -11,7 +12,8 @@ const Signup = () => {
     const [pic, setPic] = useState();
     const [picLoading, setPicLoading] = useState(false);
 
-    const handleClick = () => setShow(!show);
+    const handleClickPassword = () => setShowP(!showP);
+    const handleClickConfirmPassword = () => setShowCP(!showCP);
 
     const postDetails = (pics) => {
     }
@@ -37,13 +39,13 @@ const Signup = () => {
                 <FormLabel>Password</FormLabel>
                 <InputGroup size="md">
                     <Input
-                        type={show ? "text" : "password"}
-                        placeholder="Enter Your Name"
+                        type={showP ? "text" : "password"}
+                        placeholder="Password"
                         onChange={(e) => setPassword(e.target.value)}
                     />
                     <InputRightElement width="4.5rem">
-                        <Button h="1.75rem" size="sm" onClick={handleClick}>
-                            {show ? "Hide" : "Show"}
+                        <Button h="1.75rem" size="sm" onClick={handleClickPassword}>
+                            {showP ? "Hide" : "Show"}
                         </Button>
                     </InputRightElement>
                 </InputGroup>
@@ -53,13 +55,13 @@ const Signup = () => {
                 <FormLabel>Confirm Password</FormLabel>
                 <InputGroup size="md">
                     <Input
-                        type={show ? "text" : "password"}
+                        type={showCP ? "text" : "password"}
                         placeholder="Confirm password"
                         onChange={(e) => setConfirmpassword(e.target.value)}
                     />
                     <InputRightElement width="4.5rem">
-                        <Button h="1.75rem" size="sm" onClick={handleClick}>
-                            {show ? "Hide" : "Show"}
+                        <Button h="1.75rem" size="sm" onClick={handleClickConfirmPassword}>
+                            {showCP ? "Hide" : "Show"}
                         </Button>
                     </InputRightElement>
                 </InputGroup>
