@@ -1,9 +1,32 @@
-import { Box, Container, Tab, TabList, TabPanel, TabPanels, Tabs, Text } from '@chakra-ui/react'
-import React from 'react'
-import Login from '../components/authentication/Login'
-import Signup from '../components/authentication/Signup'
+import {
+  Box,
+  Container,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  Text,
+} from "@chakra-ui/react";
+import React, { useEffect } from "react";
+import Login from "../components/authentication/Login";
+import Signup from "../components/authentication/Signup";
+import { useHistory } from "react-router-dom";
+
 
 function Homepage() {
+  const history = useHistory();
+  
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("userInfo"));
+
+    if (!user) {
+      history.push("/chats");
+
+    }
+  }, [history]);
+
   return (
     <Container maxW="xl" centerContent>
       <Box
@@ -37,7 +60,7 @@ function Homepage() {
         </Tabs>
       </Box>
     </Container>
-  )
+  );
 }
 
-export default Homepage
+export default Homepage;
