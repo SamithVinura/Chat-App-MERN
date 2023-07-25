@@ -14,7 +14,7 @@ import { getSender, getSenderFull } from "../config/ChatLogics";
 import ProfileModel from "./miscellaneous/ProfileModel";
 import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
 
-const SingleChat = ({ fetchAgain, setFetchAgain }) => {
+const SingleChat = ({ fetchAgain, setFectchAgain }) => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [newMessage, setNewMessage] = useState("");
@@ -65,7 +65,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                  <UpdateGroupChatModal
                    /*  fetchMessages={fetchMessages} */
                     fetchAgain={fetchAgain}
-                    setFetchAgain={setFetchAgain}
+                    setFectchAgain={setFectchAgain}
                   />
               </>
             )}
