@@ -93,7 +93,7 @@ const SingleChat = ({ fetchAgain, setFectchAgain }) => {
           },
           config
         );
-        /* socket.emit("new message", data); */
+        socket.emit("new message", data);
         setMessages([...messages, data]);
       } catch (error) {
         toast({
@@ -129,6 +129,8 @@ const SingleChat = ({ fetchAgain, setFectchAgain }) => {
     }, timerLength);
   }
 
+  
+
     useEffect(() => {
     fetchMessages();
 
@@ -141,6 +143,8 @@ const SingleChat = ({ fetchAgain, setFectchAgain }) => {
     socket.emit("setup",user)
     socket.on('connection',()=>{setSocketConnected(true)})
   },[socketConnected])
+
+
   return (
     <>
       {selectedChat ? (
