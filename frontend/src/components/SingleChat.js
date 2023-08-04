@@ -61,8 +61,7 @@ const SingleChat = ({ fetchAgain, setFectchAgain }) => {
       );
       setMessages(data);
       setLoading(false);
-
-      /* socket.emit("join chat", selectedChat._id); */
+      socket.emit("join chat", selectedChat._id);
     } catch (error) {
       toast({
         title: "Error Occured!",
@@ -133,7 +132,7 @@ const SingleChat = ({ fetchAgain, setFectchAgain }) => {
     useEffect(() => {
     fetchMessages();
 
-   /*  selectedChatCompare = selectedChat; */
+    selectedChatCompare = selectedChat;
     // eslint-disable-next-line
   }, [selectedChat]);
 
