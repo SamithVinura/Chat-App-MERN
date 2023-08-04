@@ -6,6 +6,7 @@ const userRoutes = require('./routes/userRoutes')
 const chatRoutes = require('./routes/chatRoutes')
 const messageRoutes = require('./routes/messageRoutes')
 const { notFound, errorHandler } = require('./middlewares/errorMiddleware')
+const { Socket } = require('socket.io')
 
 dotenv.config()
 connectDB()
@@ -28,4 +29,16 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000
 
-app.listen(PORT,console.log(`server running in port ${PORT}`))
+const server = app.listen(PORT,console.log(`server running in port ${PORT}`))
+
+const io = require('socket.io')(server,{
+    pingTimeout:6000,
+    cors:{
+        origin:"http://localhost:3000"
+    }
+})
+
+io.on("connection",(socket)=>{
+    console.log("connection to soket.io")
+})
+
