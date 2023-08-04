@@ -39,6 +39,12 @@ const io = require('socket.io')(server,{
 })
 
 io.on("connection",(socket)=>{
-    console.log("connection to soket.io")
+    console.log("connected to soket.io")
+
+    socket.on('setup',(userData)=>{
+        socket.join(userData._id)
+        console.log(userData._id)
+        socket.emit("connected")
+    })
 })
 

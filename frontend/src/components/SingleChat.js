@@ -15,6 +15,10 @@ import ProfileModel from "./miscellaneous/ProfileModel";
 import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
 import axios from "axios";
 import ScrollableChat from "./ScrollableChat";
+import { io } from "socket.io-client";
+
+const ENDPOINT = "http://localhost:5000"
+var socket,selectedChatCompare
 
 const SingleChat = ({ fetchAgain, setFectchAgain }) => {
   const [messages, setMessages] = useState([]);
@@ -23,6 +27,7 @@ const SingleChat = ({ fetchAgain, setFectchAgain }) => {
   const [socketConnected, setSocketConnected] = useState(false);
   const [typing, setTyping] = useState(false);
   const [istyping, setIsTyping] = useState(false);
+  
   const toast = useToast();
 
    /* const defaultOptions = {
@@ -103,6 +108,7 @@ const SingleChat = ({ fetchAgain, setFectchAgain }) => {
       }
     }
   }
+
   const typingHandler = async (e) => {
      setNewMessage(e.target.value);
 
@@ -130,6 +136,12 @@ const SingleChat = ({ fetchAgain, setFectchAgain }) => {
    /*  selectedChatCompare = selectedChat; */
     // eslint-disable-next-line
   }, [selectedChat]);
+
+  useEffect(()=>{
+    socket = io(ENDPOINT)
+    socket.emit("setup",user)
+    socket.on('connection',()=>{setSocketConnected(true)})
+  },[socketConnected])
   return (
     <>
       {selectedChat ? (
