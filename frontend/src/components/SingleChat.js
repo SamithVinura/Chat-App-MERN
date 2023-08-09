@@ -9,6 +9,7 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
+import animationData from "../animations/typing.json";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import { getSender, getSenderFull } from "../config/ChatLogics";
 import ProfileModel from "./miscellaneous/ProfileModel";
@@ -16,6 +17,7 @@ import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
 import axios from "axios";
 import ScrollableChat from "./ScrollableChat";
 import { io } from "socket.io-client";
+import Lottie from "react-lottie";
 
 const ENDPOINT = "http://localhost:5000"
 var socket,selectedChatCompare
@@ -30,7 +32,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   
   const toast = useToast();
 
-   /* const defaultOptions = {
+   const defaultOptions = {
     loop: true,
     autoplay: true,
     // eslint-disable-next-line no-undef
@@ -38,7 +40,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     rendererSettings: {
       preserveAspectRatio: "xMidYMid slice",
     },
-  }; */
+  };
 
    
   const { selectedChat, setSelectedChat, user, notification, setNotification } = ChatState();
@@ -248,13 +250,12 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             >
               {istyping ? (
                 <div>
-{/*                   <Lottie
+                  <Lottie
                     options={defaultOptions}
                     // height={50}
                     width={70}
                     style={{ marginBottom: 15, marginLeft: 0 }}
-                  /> */}
-                  typing
+                  />
                 </div>
               ) : (
                 <></>
