@@ -8,7 +8,7 @@ import Chatbox from "../components/Chatbox";
 
 function Chatpage() {
   const { user } = ChatState();
-  const [fetchAgain, setFectchAgain] = useState(false);
+  const [fetchAgain, setFetchAgain] = useState(false);
 
   
   return (
@@ -24,7 +24,7 @@ function Chatpage() {
         {user && (
           <MyChats fetchAgain={fetchAgain} />
         )}
-        {user && <Chatbox fetchAgain={fetchAgain} setFectchAgain={setFectchAgain}/>}
+        {user && <Chatbox fetchAgain={fetchAgain} setFectchAgain={setFetchAgain}/>}
       </Box>
     </div>
   );

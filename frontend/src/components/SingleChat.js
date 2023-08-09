@@ -20,7 +20,7 @@ import { io } from "socket.io-client";
 const ENDPOINT = "http://localhost:5000"
 var socket,selectedChatCompare
 
-const SingleChat = ({ fetchAgain, setFectchAgain }) => {
+const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [newMessage, setNewMessage] = useState("");
@@ -76,12 +76,12 @@ const SingleChat = ({ fetchAgain, setFectchAgain }) => {
 
   const sendMessage = async (event) => {
      if (event.key === "Enter" && newMessage) {
-      /* socket.emit("stop typing", selectedChat._id); */
+      socket.emit("stop typing", selectedChat._id);
       try {
         const config = {
           headers: {
             "Content-type": "application/json",
-            Authorization: `Bearer ${user.token}`,
+            Authorization: `Bearer ${user.token}`, 
           },
         };
         setNewMessage("");
@@ -95,6 +95,7 @@ const SingleChat = ({ fetchAgain, setFectchAgain }) => {
         );
         socket.emit("new message", data);
         setMessages([...messages, data]);
+        setFetchAgain(pre=>!pre)
       } catch (error) {
         toast({
           title: "Error Occured!",
@@ -108,6 +109,39 @@ const SingleChat = ({ fetchAgain, setFectchAgain }) => {
     }
   }
 
+  useEffect(() => {
+    socket = io(ENDPOINT);
+    socket.emit("setup", user);
+    socket.on("connected", () => setSocketConnected(true));
+    socket.on("typing", () => setIsTyping(true));
+    socket.on("stop typing", () => setIsTyping(false));
+
+    // eslint-disable-next-line
+  }, []);
+
+  useEffect(() => {
+    fetchMessages();
+
+    selectedChatCompare = selectedChat;
+    // eslint-disable-next-line
+  }, [selectedChat]);
+
+  useEffect(() => {
+    socket.on("message recieved", (newMessageRecieved) => {
+      if (
+        !selectedChatCompare || // if chat is not selected or doesn't match current chat
+        selectedChatCompare._id !== newMessageRecieved.chat._id
+      ) {
+        if (!notification.includes(newMessageRecieved)) {
+          setNotification([newMessageRecieved, ...notification]);
+          setFetchAgain(!fetchAgain);
+        }
+      } else {
+        setMessages([...messages, newMessageRecieved]);
+      }
+    });
+  });
+
   const typingHandler = async (e) => {
      setNewMessage(e.target.value);
 
@@ -115,7 +149,7 @@ const SingleChat = ({ fetchAgain, setFectchAgain }) => {
 
     if (!typing) {
       setTyping(true);
-      /* socket.emit("typing", selectedChat._id); */
+      socket.emit("typing", selectedChat._id);
     }
     let lastTypingTime = new Date().getTime();
     var timerLength = 3000;
@@ -123,7 +157,7 @@ const SingleChat = ({ fetchAgain, setFectchAgain }) => {
       var timeNow = new Date().getTime();
       var timeDiff = timeNow - lastTypingTime;
       if (timeDiff >= timerLength && typing) {
-        /* socket.emit("stop typing", selectedChat._id); */
+        socket.emit("stop typing", selectedChat._id);
         setTyping(false);
       }
     }, timerLength);
@@ -131,7 +165,7 @@ const SingleChat = ({ fetchAgain, setFectchAgain }) => {
 
   
 
-    useEffect(() => {
+/*     useEffect(() => {
     fetchMessages();
 
     selectedChatCompare = selectedChat;
@@ -143,7 +177,7 @@ const SingleChat = ({ fetchAgain, setFectchAgain }) => {
     socket.emit("setup",user)
     socket.on('connection',()=>{setSocketConnected(true)})
   },[socketConnected])
-
+ */
 
   return (
     <>
@@ -174,9 +208,9 @@ const SingleChat = ({ fetchAgain, setFectchAgain }) => {
               <>
                 {selectedChat.chatName.toUpperCase()}
                  <UpdateGroupChatModal
-                   /*  fetchMessages={fetchMessages} */
+                    fetchMessages={fetchMessages}
                     fetchAgain={fetchAgain}
-                    setFectchAgain={setFectchAgain}
+                    setFectchAgain={setFetchAgain}
                   />
               </>
             )}
@@ -214,12 +248,13 @@ const SingleChat = ({ fetchAgain, setFectchAgain }) => {
             >
               {istyping ? (
                 <div>
-                  {/* <Lottie
+{/*                   <Lottie
                     options={defaultOptions}
                     // height={50}
                     width={70}
                     style={{ marginBottom: 15, marginLeft: 0 }}
                   /> */}
+                  typing
                 </div>
               ) : (
                 <></>
@@ -236,7 +271,7 @@ const SingleChat = ({ fetchAgain, setFectchAgain }) => {
         </>
       ) : (
         // to get socket.io on same page
-        <Box d="flex" alignItems="center" justifyContent="center" h="100%">
+        <Box display="flex" alignItems="center" justifyContent="center" h="100%">
           <Text fontSize="3xl" pb={3} fontFamily="Work sans">
             Click on a user to start chatting
           </Text>
