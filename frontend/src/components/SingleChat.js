@@ -1,26 +1,22 @@
-import React, { useEffect, useState } from "react";
-import { ChatState } from "../context/chatProvider";
-import {
-  Box,
-  FormControl,
-  IconButton,
-  Input,
-  Spinner,
-  Text,
-  useToast,
-} from "@chakra-ui/react";
-import animationData from "../animations/typing.json";
-import { ArrowBackIcon } from "@chakra-ui/icons";
+import { FormControl } from "@chakra-ui/form-control";
+import { Input } from "@chakra-ui/input";
+import { Box, Text } from "@chakra-ui/layout";
+/* import "./styles.css"; */
+import { IconButton, Spinner, useToast } from "@chakra-ui/react";
 import { getSender, getSenderFull } from "../config/ChatLogics";
-import ProfileModel from "./miscellaneous/ProfileModel";
-import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
+import { useEffect, useState } from "react";
 import axios from "axios";
+import { ArrowBackIcon } from "@chakra-ui/icons";
+import ProfileModal from "./miscellaneous/ProfileModel";
 import ScrollableChat from "./ScrollableChat";
-import { io } from "socket.io-client";
 import Lottie from "react-lottie";
+import animationData from "../animations/typing.json";
 
-const ENDPOINT = "http://localhost:5000"
-var socket,selectedChatCompare
+import io from "socket.io-client";
+import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
+import { ChatState } from "../context/chatProvider";
+const ENDPOINT = "http://localhost:5000"; // "https://talk-a-tive.herokuapp.com"; -> After deployment
+var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [messages, setMessages] = useState([]);
@@ -29,21 +25,18 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [socketConnected, setSocketConnected] = useState(false);
   const [typing, setTyping] = useState(false);
   const [istyping, setIsTyping] = useState(false);
-  
   const toast = useToast();
 
-   const defaultOptions = {
+  const defaultOptions = {
     loop: true,
     autoplay: true,
-    // eslint-disable-next-line no-undef
     animationData: animationData,
     rendererSettings: {
       preserveAspectRatio: "xMidYMid slice",
     },
   };
-
-   
-  const { selectedChat, setSelectedChat, user, notification, setNotification } = ChatState();
+  const { selectedChat, setSelectedChat, user, notification, setNotification } =
+    ChatState();
 
   const fetchMessages = async () => {
     if (!selectedChat) return;
@@ -63,6 +56,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       );
       setMessages(data);
       setLoading(false);
+
       socket.emit("join chat", selectedChat._id);
     } catch (error) {
       toast({
@@ -77,13 +71,13 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   };
 
   const sendMessage = async (event) => {
-     if (event.key === "Enter" && newMessage) {
+    if (event.key === "Enter" && newMessage) {
       socket.emit("stop typing", selectedChat._id);
       try {
         const config = {
           headers: {
             "Content-type": "application/json",
-            Authorization: `Bearer ${user.token}`, 
+            Authorization: `Bearer ${user.token}`,
           },
         };
         setNewMessage("");
@@ -98,18 +92,19 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         socket.emit("new message", data);
         setMessages([...messages, data]);
         setFetchAgain(pre=>!pre)
+       
       } catch (error) {
-        toast({
+       /*  toast({
           title: "Error Occured!",
           description: "Failed to send the Message",
           status: "error",
           duration: 5000,
           isClosable: true,
           position: "bottom",
-        });
+        }); */
       }
     }
-  }
+  };
 
   useEffect(() => {
     socket = io(ENDPOINT);
@@ -126,7 +121,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
     selectedChatCompare = selectedChat;
     // eslint-disable-next-line
-  }, [selectedChat]);
+  }, [selectedChat,fetchAgain]);
 
   useEffect(() => {
     socket.on("message recieved", (newMessageRecieved) => {
@@ -144,8 +139,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     });
   });
 
-  const typingHandler = async (e) => {
-     setNewMessage(e.target.value);
+  const typingHandler = (e) => {
+    setNewMessage(e.target.value);
 
     if (!socketConnected) return;
 
@@ -163,23 +158,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         setTyping(false);
       }
     }, timerLength);
-  }
-
-  
-
-/*     useEffect(() => {
-    fetchMessages();
-
-    selectedChatCompare = selectedChat;
-    // eslint-disable-next-line
-  }, [selectedChat]);
-
-  useEffect(()=>{
-    socket = io(ENDPOINT)
-    socket.emit("setup",user)
-    socket.on('connection',()=>{setSocketConnected(true)})
-  },[socketConnected])
- */
+  };
 
   return (
     <>
@@ -200,22 +179,24 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               icon={<ArrowBackIcon />}
               onClick={() => setSelectedChat("")}
             />
-
-            {!selectedChat.isGroupChat ? (
-              <>
-                {getSender(user, selectedChat.users)}
-                <ProfileModel user={getSenderFull(user, selectedChat.users)} />
-              </>
-            ) : (
-              <>
-                {selectedChat.chatName.toUpperCase()}
-                 <UpdateGroupChatModal
+            {messages &&
+              (!selectedChat.isGroupChat ? (
+                <>
+                  {getSender(user, selectedChat.users)}
+                  <ProfileModal
+                    user={getSenderFull(user, selectedChat.users)}
+                  />
+                </>
+              ) : (
+                <>
+                  {selectedChat.chatName.toUpperCase()}
+                  <UpdateGroupChatModal
                     fetchMessages={fetchMessages}
                     fetchAgain={fetchAgain}
-                    setFectchAgain={setFetchAgain}
+                    setFetchAgain={setFetchAgain}
                   />
-              </>
-            )}
+                </>
+              ))}
           </Text>
           <Box
             display="flex"
@@ -228,7 +209,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             borderRadius="lg"
             overflowY="hidden"
           >
-              {loading ? (
+            {loading ? (
               <Spinner
                 size="xl"
                 w={20}
