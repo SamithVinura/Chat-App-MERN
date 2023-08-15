@@ -1,25 +1,23 @@
 import {
-  Box,
-  Button,
-  FormControl,
-  Input,
   Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
   ModalBody,
   ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
+  Button,
   useDisclosure,
+  FormControl,
+  Input,
   useToast,
+  Box,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
-
 import axios from "axios";
-import UserListItem from "../userAvatar/UserListItem";
-import UserBadgeItem from "../userAvatar/UserBadgeItem";
+import { useState } from "react";
 import { ChatState } from "../../context/chatProvider";
-
+import UserBadgeItem from "../userAvatar/UserBadgeItem";
+import UserListItem from "../userAvatar/UserListItem";
 
 const GroupChatModal = ({ children }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -32,12 +30,27 @@ const GroupChatModal = ({ children }) => {
 
   const { user, chats, setChats } = ChatState();
 
+  const handleGroup = (userToAdd) => {
+    if (selectedUsers.includes(userToAdd)) {
+      toast({
+        title: "User already added",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "top",
+      });
+      return;
+    }
+
+    setSelectedUsers([...selectedUsers, userToAdd]);
+  };
+
   const handleSearch = async (query) => {
     setSearch(query);
-
     if (!query) {
       return;
     }
+
     try {
       setLoading(true);
       const config = {
@@ -65,20 +78,6 @@ const GroupChatModal = ({ children }) => {
     setSelectedUsers(selectedUsers.filter((sel) => sel._id !== delUser._id));
   };
 
-  const handleGroup = (userToAdd) => {
-    if (selectedUsers.includes(userToAdd)) {
-      toast({
-        title: "User already added",
-        status: "warning",
-        duration: 5000,
-        isClosable: true,
-        position: "top",
-      });
-      return;
-    }
-    setSelectedUsers([...selectedUsers, userToAdd]);
-  };
-
   const handleSubmit = async () => {
     if (!groupChatName || !selectedUsers) {
       toast({
@@ -97,7 +96,6 @@ const GroupChatModal = ({ children }) => {
           Authorization: `Bearer ${user.token}`,
         },
       };
-
       const { data } = await axios.post(
         `/api/chat/group`,
         {
@@ -106,7 +104,6 @@ const GroupChatModal = ({ children }) => {
         },
         config
       );
-
       setChats([data, ...chats]);
       onClose();
       toast({
@@ -144,7 +141,7 @@ const GroupChatModal = ({ children }) => {
             Create Group Chat
           </ModalHeader>
           <ModalCloseButton />
-          <ModalBody display="flex" flexDir="column" alignItems="center">
+          <ModalBody d="flex" flexDir="column" alignItems="center">
             <FormControl>
               <Input
                 placeholder="Chat Name"
@@ -159,7 +156,7 @@ const GroupChatModal = ({ children }) => {
                 onChange={(e) => handleSearch(e.target.value)}
               />
             </FormControl>
-            <Box w="100%" display="flex" flexWrap="wrap">
+            <Box w="100%" d="flex" flexWrap="wrap">
               {selectedUsers.map((u) => (
                 <UserBadgeItem
                   key={u._id}

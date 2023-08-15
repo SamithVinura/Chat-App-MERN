@@ -1,18 +1,20 @@
-import React, { useEffect, useState } from 'react'
-import { ChatState } from '../context/chatProvider';
-import { Box, Button, Stack, Text, useToast } from '@chakra-ui/react';
-import axios from 'axios';
-import { AddIcon } from '@chakra-ui/icons';
-import ChatLoading from './ChatLoading';
-import { getSender } from '../config/ChatLogics';
-import GroupChatModal from './miscellaneous/GroupChatModal';
+import { AddIcon } from "@chakra-ui/icons";
+import { Box, Stack, Text } from "@chakra-ui/layout";
+import { useToast } from "@chakra-ui/toast";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { getSender } from "../config/ChatLogics";
+import ChatLoading from "./ChatLoading";
+import GroupChatModal from "./miscellaneous/GroupChatModal";
+import { Button } from "@chakra-ui/react";
+import { ChatState } from "../context/chatProvider";
 
-const MyChats = ({fetchAgain}) => {
+const MyChats = ({ fetchAgain }) => {
   const [loggedUser, setLoggedUser] = useState();
-  
+
   const { selectedChat, setSelectedChat, user, chats, setChats } = ChatState();
 
-   const toast = useToast();
+  const toast = useToast();
 
   const fetchChats = async () => {
     // console.log(user._id);
@@ -42,8 +44,9 @@ const MyChats = ({fetchAgain}) => {
     fetchChats();
     // eslint-disable-next-line
   }, [fetchAgain]);
+
   return (
-      <Box
+    <Box
       display={{ base: selectedChat ? "none" : "flex", md: "flex" }}
       flexDir="column"
       alignItems="center"
@@ -66,7 +69,7 @@ const MyChats = ({fetchAgain}) => {
         My Chats
         <GroupChatModal>
           <Button
-            display="flex"
+            disabled="flex"
             fontSize={{ base: "17px", md: "10px", lg: "17px" }}
             rightIcon={<AddIcon />}
           >
@@ -75,7 +78,7 @@ const MyChats = ({fetchAgain}) => {
         </GroupChatModal>
       </Box>
       <Box
-        displays="flex"
+        display="flex"
         flexDir="column"
         p={3}
         bg="#F8F8F8"
@@ -118,7 +121,7 @@ const MyChats = ({fetchAgain}) => {
         )}
       </Box>
     </Box>
-  )
-}
+  );
+};
 
-export default MyChats
+export default MyChats;

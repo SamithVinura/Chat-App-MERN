@@ -14,15 +14,15 @@ import {
   Image,
 } from "@chakra-ui/react";
 
-const ProfileModel = ({user,children}) => {
+const ProfileModal = ({ user, children }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
-    const { isOpen, onOpen, onClose } = useDisclosure();
   return (
-     <>
+    <>
       {children ? (
         <span onClick={onOpen}>{children}</span>
       ) : (
-        <IconButton display={{ base: "flex" }} icon={<ViewIcon />} onClick={onOpen} />
+        <IconButton d={{ base: "flex" }} icon={<ViewIcon />} onClick={onOpen} />
       )}
       <Modal size="lg" onClose={onClose} isOpen={isOpen} isCentered>
         <ModalOverlay />
@@ -61,7 +61,7 @@ const ProfileModel = ({user,children}) => {
         </ModalContent>
       </Modal>
     </>
-  )
-}
+  );
+};
 
-export default ProfileModel
+export default ProfileModal;

@@ -17,13 +17,12 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 import axios from "axios";
-import { useEffect, useState } from "react";
-
+import { useState } from "react";
+import { ChatState } from "../../context/chatProvider";
 import UserBadgeItem from "../userAvatar/UserBadgeItem";
 import UserListItem from "../userAvatar/UserListItem";
-import { ChatState } from "../../context/chatProvider";
 
-const UpdateGroupChatModal = ({  fetchAgain, setFectchAgain }) => {
+const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [groupChatName, setGroupChatName] = useState();
   const [search, setSearch] = useState("");
@@ -33,8 +32,6 @@ const UpdateGroupChatModal = ({  fetchAgain, setFectchAgain }) => {
   const toast = useToast();
 
   const { selectedChat, setSelectedChat, user } = ChatState();
-
-  
 
   const handleSearch = async (query) => {
     setSearch(query);
@@ -83,13 +80,12 @@ const UpdateGroupChatModal = ({  fetchAgain, setFectchAgain }) => {
           chatName: groupChatName,
         },
         config
-      )
+      );
 
       console.log(data._id);
-
+      // setSelectedChat("");
       setSelectedChat(data);
-   
-      setFectchAgain(!fetchAgain);
+      setFetchAgain(!fetchAgain);
       setRenameLoading(false);
     } catch (error) {
       toast({
@@ -142,10 +138,10 @@ const UpdateGroupChatModal = ({  fetchAgain, setFectchAgain }) => {
           userId: user1._id,
         },
         config
-      )
+      );
 
       setSelectedChat(data);
-      setFectchAgain(!fetchAgain);
+      setFetchAgain(!fetchAgain);
       setLoading(false);
     } catch (error) {
       toast({
@@ -190,8 +186,8 @@ const UpdateGroupChatModal = ({  fetchAgain, setFectchAgain }) => {
       );
 
       user1._id === user._id ? setSelectedChat() : setSelectedChat(data);
-      setFectchAgain(!fetchAgain);
-      /* fetchMessages(); */
+      setFetchAgain(!fetchAgain);
+      fetchMessages();
       setLoading(false);
     } catch (error) {
       toast({
@@ -206,9 +202,6 @@ const UpdateGroupChatModal = ({  fetchAgain, setFectchAgain }) => {
     }
     setGroupChatName("");
   };
-
-
-/*   useEffect(()=>{},[groupChatName]) */
 
   return (
     <>
@@ -227,11 +220,11 @@ const UpdateGroupChatModal = ({  fetchAgain, setFectchAgain }) => {
           </ModalHeader>
 
           <ModalCloseButton />
-          <ModalBody display="flex" flexDir="column" alignItems="center">
-            <Box w="100%" display="flex" flexWrap="wrap" pb={3}>
-              {selectedChat?.users?.map((u) => (
+          <ModalBody d="flex" flexDir="column" alignItems="center">
+            <Box w="100%" d="flex" flexWrap="wrap" pb={3}>
+              {selectedChat.users.map((u) => (
                 <UserBadgeItem
-                  key={u?._id}
+                  key={u._id}
                   user={u}
                   admin={selectedChat.groupAdmin}
                   handleFunction={() => handleRemove(u)}
@@ -242,7 +235,7 @@ const UpdateGroupChatModal = ({  fetchAgain, setFectchAgain }) => {
               <Input
                 placeholder="Chat Name"
                 mb={3}
-                value={groupChatName || ''}
+                value={groupChatName}
                 onChange={(e) => setGroupChatName(e.target.value)}
               />
               <Button
@@ -268,7 +261,7 @@ const UpdateGroupChatModal = ({  fetchAgain, setFectchAgain }) => {
             ) : (
               searchResult?.map((user) => (
                 <UserListItem
-                  key={user?._id}
+                  key={user._id}
                   user={user}
                   handleFunction={() => handleAddUser(user)}
                 />
