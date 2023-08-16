@@ -81,6 +81,7 @@ function SideDrawer() {
 
       setLoading(false);
       setSearchResult(data);
+      
     } catch (error) {
       toast({
         title: "Error Occured!",
@@ -91,6 +92,7 @@ function SideDrawer() {
         position: "bottom-left",
       });
     }
+    console.log(searchResult)
   };
 
   const accessChat = async (userId) => {
